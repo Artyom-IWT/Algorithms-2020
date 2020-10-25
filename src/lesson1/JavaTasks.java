@@ -2,7 +2,15 @@ package lesson1;
 
 import kotlin.NotImplementedError;
 
-@SuppressWarnings("unused")
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+
 public class JavaTasks {
     /**
      * Сортировка времён
@@ -33,9 +41,42 @@ public class JavaTasks {
      * 07:56:14 PM
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
+     *
      */
-    static public void sortTimes(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTimes(String inputName, String outputName) throws IOException, ParseException {
+        BufferedReader reader = Files.newBufferedReader(Paths.get(inputName));
+        String line = reader.readLine();
+        List<Integer> times = new ArrayList<>();
+        while (line != null) {
+            if (!line.matches("([0-1])(\\d):([0-5])(\\d):([0-5])(\\d) (AM|PM)"))
+                throw new IllegalArgumentException();
+            String[] array = line.split("[:\\sAPM]");
+            int seconds = 0;
+            int multiplier = 3600;
+            for (String s : array) {
+                int i = Integer.parseInt(s);
+                if (i == 12 && multiplier == 3600) seconds += 0;
+                else seconds += i * multiplier;
+                multiplier /= 60;
+            }
+            if (line.contains("AM")) times.add(seconds);
+            else if(line.contains("PM")) times.add(seconds + 12 * 3600);
+            line = reader.readLine();
+        }
+        int[] timesA = times.stream().mapToInt(i -> i).toArray();
+        Arrays.sort(timesA);
+        DateFormat df = new SimpleDateFormat("hh:mm:ss aa");
+        DateFormat s = new SimpleDateFormat("ss");
+        BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputName));
+        for (int i = 0; i < timesA.length; i++) {
+            Date date;
+            String out;
+            date = s.parse(String.valueOf(timesA[i]));
+            out = df.format(date);
+            writer.write(out);
+            writer.newLine();
+        }
+        writer.close();
     }
 
     /**
@@ -64,8 +105,36 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public void sortAddresses(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortAddresses(String inputName, String outputName) throws IOException{
+        BufferedReader reader = Files.newBufferedReader(Paths.get(inputName));
+        Comparator<String> comparator = (o1, o2) -> {
+            String s1 = o1.replaceAll("[\\d ]", "");
+            String s2 = o2.replaceAll("[\\d ]", "");
+            if (s1.equals(s2)) {
+                Integer int1 = Integer.parseInt(o1.replaceAll("[^\\d]", ""));
+                Integer int2 = Integer.parseInt(o2.replaceAll("[^\\d]", ""));
+                return int1.compareTo(int2);
+            }
+            return o1.compareTo(o2);
+        };
+        TreeMap<String, TreeSet<String>> map = new TreeMap<>(comparator);
+        String line = reader.readLine();
+        while (line != null) {
+            if (!line.matches("[А-Яа-яЁё\\s\\-\\d]+"))
+                throw new IllegalArgumentException();
+            String[] array = line.split(" - ");
+            if (!map.containsKey(array[1])) map.put(array[1], new TreeSet<>());
+            map.get(array[1]).add(array[0]);
+            line = reader.readLine();
+        }
+        BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputName));
+        for (Map.Entry<String, TreeSet<String>> entry : map.entrySet()) {
+            String value = entry.getValue().toString();
+            value = value.substring(1, value.length() - 1);
+            writer.write(entry.getKey() + " - " + value);
+            writer.newLine();
+        }
+        writer.close();
     }
 
     /**
@@ -98,8 +167,24 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortTemperatures(String inputName, String outputName) throws IOException{
+        BufferedReader reader = Files.newBufferedReader(Paths.get(inputName));
+        ArrayList<Double> doubles = new ArrayList<>();
+        String line = reader.readLine();
+        while (line != null) {
+            double d = Double.parseDouble(line);
+            if (d > 500.0 || d < -273.0) throw new IllegalArgumentException();
+            doubles.add(d);
+            line = reader.readLine();
+        }
+        double[] doublesA = doubles.stream().mapToDouble(d -> d).toArray();
+        Arrays.sort(doublesA);
+        BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputName));
+        for (double d : doublesA) {
+            writer.write(String.valueOf(d));
+            writer.newLine();
+        }
+        writer.close();
     }
 
     /**

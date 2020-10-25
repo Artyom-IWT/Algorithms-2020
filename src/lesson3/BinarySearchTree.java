@@ -102,6 +102,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @Override
     public boolean remove(Object o) {
         if (!contains(o)) return false;
+        @SuppressWarnings("unchecked")
         List<Node<T>> list = findWithParent(root, (T) o);
         if (list == null) return false;
         Node<T> current = list.get(0);
@@ -137,8 +138,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
                     else if (parent.right != null && parent.right.value.equals(current.value)) parent.right = current.right;
                 } else root = current.right;
             } else {
-                Node<T> smallestP = findSmallestParent(current.right);;
-                Node<T> node = smallestP.left;
+                Node<T> smallestP = findSmallestParent(current.right);
+                Node<T> node = new Node(smallestP.left.value);
                 remove(smallestP.left.value);
                 size++;
                 node.left = current.left;
@@ -181,7 +182,9 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     }
 
     private Node<T> findSmallestParent (Node<T> start) {
-        if (start.left.left != null) findSmallestParent(start.left);
+        while (start.left.left != null) {
+            start = start.left;
+        }
         return start;
     }
 
