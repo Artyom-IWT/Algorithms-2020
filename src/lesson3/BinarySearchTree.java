@@ -185,10 +185,6 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         return start;
     }
 
-    private boolean isLeaf (Node<T> node) {
-        return (node.left == null && node.right == null);
-    }
-
     @Nullable
     @Override
     public Comparator<? super T> comparator() {
