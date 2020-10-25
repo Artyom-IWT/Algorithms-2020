@@ -101,8 +101,92 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      */
     @Override
     public boolean remove(Object o) {
-        // TODO
-        throw new NotImplementedError();
+        if (!contains(o)) return false;
+        List<Node<T>> list = findWithParent(root, (T) o);
+        if (list == null) return false;
+        Node<T> current = list.get(0);
+        if (current.left == null && current.right == null) {
+            if (list.size() == 2) {
+                Node<T> parent = list.get(1);
+                if (parent.left != null && parent.left.value.equals(current.value)) parent.left = null;
+                else if (parent.right != null && parent.right.value.equals(current.value)) parent.right = null;
+            } else root = null;
+        }
+        else if (current.left != null && current.right == null) {
+            if (list.size() == 2) {
+                Node<T> parent = list.get(1);
+                Node<T> left = current.left;
+                if (parent.left != null && parent.left.value.equals(current.value)) parent.left = left;
+                else if (parent.right != null && parent.right.value.equals(current.value)) parent.right = left;
+            } else root = current.left;
+        }
+        else if (current.left == null) {
+            if (list.size() == 2) {
+                Node<T> parent = list.get(1);
+                Node<T> right = current.right;
+                if (parent.right != null && parent.right.value.equals(current.value)) parent.right = right;
+                else if (parent.left != null && parent.left.value.equals(current.value)) parent.left = right;
+            } else root = current.right;
+        }
+        else  {
+            if (current.right.left == null) {
+                current.right.left = current.left;
+                if (list.size() == 2) {
+                    Node<T> parent = list.get(1);
+                    if (parent.left != null && parent.left.value.equals(current.value)) parent.left = current.right;
+                    else if (parent.right != null && parent.right.value.equals(current.value)) parent.right = current.right;
+                } else root = current.right;
+            } else {
+                Node<T> smallestP = findSmallestParent(current.right);;
+                Node<T> node = smallestP.left;
+                remove(smallestP.left.value);
+                size++;
+                node.left = current.left;
+                node.right = current.right;
+                if (list.size() == 2) {
+                    Node<T> parent = list.get(1);
+                    if (parent.left != null && parent.left.value.equals(current.value)) parent.left = node;
+                    else if (parent.right != null && parent.right.value.equals(current.value)) parent.right = node;
+                } else root = node;
+            }
+        }
+        size--;
+        return true;
+    } //трудоёмкость - O(log(n))
+    /**
+     * if (start == node) return Entry(null, node)
+     * Node<T> right = current.right;
+     * current = right;
+     *
+     * */
+
+    private List<Node<T>> findWithParent(Node<T> start, T value) {
+        if (start == null) return null;
+        int comparison = value.compareTo(start.value);
+        if (comparison == 0) {
+            return List.of(start);
+        }
+        else if (comparison < 0) {
+            if (start.left == null) return null;
+            else if (start.left.value == value) {
+                return List.of(start.left, start);
+            } else return findWithParent(start.left, value);
+        }
+        else {
+            if (start.right == null) return null;
+            else if (start.right.value == value) {
+                return List.of(start.right, start);
+            } else return findWithParent(start.right, value);
+        }
+    }
+
+    private Node<T> findSmallestParent (Node<T> start) {
+        if (start.left.left != null) findSmallestParent(start.left);
+        return start;
+    }
+
+    private boolean isLeaf (Node<T> node) {
+        return (node.left == null && node.right == null);
     }
 
     @Nullable
