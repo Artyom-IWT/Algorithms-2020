@@ -65,6 +65,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      *
      * Пример
      */
+
     @Override
     public boolean add(T t) {
         Node<T> closest = find(t);
@@ -99,6 +100,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      *
      * Средняя
      */
+
     @Override
     public boolean remove(Object o) {
         if (!contains(o)) return false;
@@ -154,12 +156,6 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         size--;
         return true;
     } //трудоёмкость - O(log(n))
-    /**
-     * if (start == node) return Entry(null, node)
-     * Node<T> right = current.right;
-     * current = right;
-     *
-     * */
 
     private List<Node<T>> findWithParent(Node<T> start, T value) {
         if (start == null) return null;
@@ -219,6 +215,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          *
          * Средняя
          */
+
         @Override
         public boolean hasNext() {
             return !stack.empty();
@@ -237,6 +234,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          *
          * Средняя
          */
+
         @Override
         public T next() {
             if (hasNext()) {
@@ -265,6 +263,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          *
          * Сложная
          */
+
         @Override
         public void remove() {
             // TODO
@@ -288,6 +287,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      *
      * Очень сложная (в том случае, если спецификация реализуется в полном объёме)
      */
+
     @NotNull
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
@@ -309,6 +309,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      *
      * Сложная
      */
+
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
@@ -330,6 +331,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      *
      * Сложная
      */
+
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {
