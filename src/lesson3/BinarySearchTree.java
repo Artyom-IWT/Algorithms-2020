@@ -16,6 +16,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         Node(T value) {
             this.value = value;
         }
+
+        public boolean isLeaf() {
+            return (left == null && right == null);
+        }
     }
 
     private Node<T> root = null;
@@ -108,7 +112,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         List<Node<T>> list = findWithParent(root, (T) o);
         if (list == null) return false;
         Node<T> current = list.get(0);
-        if (current.left == null && current.right == null) {
+        if (current.isLeaf()) {
             if (list.size() == 2) {
                 Node<T> parent = list.get(1);
                 if (parent.left != null && parent.left.value.equals(current.value)) parent.left = null;
@@ -142,8 +146,9 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
             } else {
                 Node<T> smallestP = findSmallestParent(current.right);
                 Node<T> node = new Node(smallestP.left.value);
-                remove(smallestP.left.value);
-                size++;
+                if (smallestP.left.right != null) {
+                    smallestP.left = smallestP.left.right;
+                } else smallestP.left = null;
                 node.left = current.left;
                 node.right = current.right;
                 if (list.size() == 2) {
@@ -184,6 +189,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         return start;
     }
 
+
     @Nullable
     @Override
     public Comparator<? super T> comparator() {
@@ -199,10 +205,12 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     public class BinarySearchTreeIterator implements Iterator<T> {
 
         private Stack<Node<T>> stack;
+        Node<T> current;
 
         private BinarySearchTreeIterator() {
             stack = new Stack<>();
             fillStack(root);
+            current = null;
         }
 
         /**
@@ -238,7 +246,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         @Override
         public T next() {
             if (hasNext()) {
-                Node<T> current = stack.pop();
+                current = stack.pop();
                 if (current.right != null) fillStack(current.right);
                 return current.value;
             } else throw new NoSuchElementException();
@@ -266,8 +274,57 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
         @Override
         public void remove() {
-            // TODO
-            throw new NotImplementedError();
+            if (current != null) {
+                List<Node<T>> list = findWithParent(root, current.value);
+                if (current.isLeaf()) {
+                    if (list.size() == 2) {
+                        Node<T> parent = list.get(1);
+                        if (parent.left != null && parent.left.value.equals(current.value)) parent.left = null;
+                        else parent.right = null;
+                    } else root = null;
+                }
+                else if (current.left != null && current.right == null) {
+                    if (list.size() == 2) {
+                        Node<T> parent = list.get(1);
+                        Node<T> left = current.left;
+                        if (parent.left != null && parent.left.value.equals(current.value)) parent.left = left;
+                        else parent.right = left;
+                    } else root = current.left;
+                }
+                else if (current.left == null) {
+                    if (list.size() == 2) {
+                        Node<T> parent = list.get(1);
+                        Node<T> right = current.right;
+                        if (parent.right != null && parent.right.value.equals(current.value)) parent.right = right;
+                        else parent.left = right;
+                    } else root = current.right;
+                }
+                else  {
+                    if (current.right.left == null) {
+                        current.right.left = current.left;
+                        if (list.size() == 2) {
+                            Node<T> parent = list.get(1);
+                            if (parent.left != null && parent.left.value.equals(current.value)) parent.left = current.right;
+                            else parent.right = current.right;
+                        } else root = current.right;
+                    } else {
+                        Node<T> smallestP = findSmallestParent(current.right);
+                        Node<T> node = new Node(smallestP.left.value);
+                        if (smallestP.left.right != null) {
+                            smallestP.left = smallestP.left.right;
+                        } else smallestP.left = null;
+                        node.left = current.left;
+                        node.right = current.right;
+                        if (list.size() == 2) {
+                            Node<T> parent = list.get(1);
+                            if (parent.left != null && parent.left.value.equals(current.value)) parent.left = node;
+                            else parent.right = node;
+                        } else root = node;
+                    }
+                }
+                current = null;
+                size --;
+            } else throw new IllegalStateException();
         }
     }
 
