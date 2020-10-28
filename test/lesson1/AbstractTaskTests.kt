@@ -1,13 +1,18 @@
 package lesson1
 
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.assertThrows
 import util.PerfResult
 import util.estimate
 import java.io.BufferedWriter
 import java.io.File
+import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.math.abs
 import kotlin.system.measureNanoTime
+import kotlin.test.assertFailsWith
 
 abstract class AbstractTaskTests : AbstractFileTests() {
 
@@ -42,6 +47,16 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortTimes("input/time_in3.txt", "temp.txt")
             assertFileContent("temp.txt", File("input/time_out3.txt").readLines())
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            assertFailsWith<IllegalArgumentException> { sortTimes("input/time_in4.txt", "temp.txt") }
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            assertFailsWith<IllegalArgumentException> { sortTimes("input/time_in5.txt", "temp.txt") }
         } finally {
             File("temp.txt").delete()
         }
@@ -115,6 +130,16 @@ abstract class AbstractTaskTests : AbstractFileTests() {
                     121.3
                 """.trimIndent()
             )
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            assertFailsWith<IllegalArgumentException> { sortTemperatures("input/temp_in2.txt", "temp.txt") }
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            assertFailsWith<IllegalArgumentException> { sortTemperatures("input/temp_in3.txt", "temp.txt") }
         } finally {
             File("temp.txt").delete()
         }

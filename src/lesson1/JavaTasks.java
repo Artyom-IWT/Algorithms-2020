@@ -48,7 +48,7 @@ public class JavaTasks {
         String line = reader.readLine();
         List<Integer> times = new ArrayList<>();
         while (line != null) {
-            if (!line.matches("([0-1])(\\d):([0-5])(\\d):([0-5])(\\d) (AM|PM)"))
+            if (!line.matches("((0\\d)|(1[0-2])):([0-5])(\\d):([0-5])(\\d) (AM|PM)"))
                 throw new IllegalArgumentException();
             String[] array = line.split("[:\\sAPM]");
             int seconds = 0;
