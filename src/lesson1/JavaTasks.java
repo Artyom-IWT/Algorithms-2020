@@ -117,7 +117,7 @@ public class JavaTasks {
             }
             return o1.compareTo(o2);
         };
-        TreeMap<String, TreeSet<String>> map = new TreeMap<>(comparator);
+        Map<String, TreeSet<String>> map = new TreeMap<>(comparator);
         String line = reader.readLine();
         while (line != null) {
             if (!line.matches("[А-Яа-яЁё\\s\\-\\d]+"))
@@ -169,7 +169,7 @@ public class JavaTasks {
      */
     static public void sortTemperatures(String inputName, String outputName) throws IOException{
         BufferedReader reader = Files.newBufferedReader(Paths.get(inputName));
-        ArrayList<Double> doubles = new ArrayList<>();
+        List<Double> doubles = new ArrayList<>();
         String line = reader.readLine();
         while (line != null) {
             double d = Double.parseDouble(line);

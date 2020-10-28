@@ -204,7 +204,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
     public class BinarySearchTreeIterator implements Iterator<T> {
 
-        private Stack<Node<T>> stack;
+        private final Stack<Node<T>> stack;
         Node<T> current;
 
         private BinarySearchTreeIterator() {
