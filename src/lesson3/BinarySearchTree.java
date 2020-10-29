@@ -301,9 +301,30 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @NotNull
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
-        // TODO
-        throw new NotImplementedError();
+        if (fromElement == null || toElement == null) throw new NullPointerException();
+        BinarySearchTree<T> tree = this;
+        SortedSet<T> set = new TreeSet<>() {
+
+            @Override
+            public boolean add(T t) {
+                if (fromElement.compareTo(t) > 0 || toElement.compareTo(t) <= 0) throw new IllegalArgumentException();
+                tree.add(t);
+                return super.add(t);
+            }
+
+            @Override
+            public boolean remove(Object o) {
+                if (fromElement.compareTo((T) o) > 0 || toElement.compareTo((T) o) <= 0) throw new IllegalArgumentException();
+                tree.remove(o);
+                return super.remove(o);
+            }
+        };
+        for (T value : tree) {
+            if (value.compareTo(fromElement) >= 0 && value.compareTo(toElement) < 0) set.add(value);
+        }
+        return set;
     }
+
 
     /**
      * Подмножество всех элементов строго меньше заданного
