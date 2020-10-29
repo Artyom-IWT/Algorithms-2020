@@ -321,13 +321,13 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
             @Override
             public boolean contains(Object o) {
-                tree.fillSet(this, fromElement, toElement);
+                tree.fillSubSet(this, fromElement, toElement);
                 return super.contains(o);
             }
 
             @Override
             public int size() {
-                tree.fillSet(this, fromElement, toElement);
+                tree.fillSubSet(this, fromElement, toElement);
                 return super.size();
             }
 
@@ -338,7 +338,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         return set;
     }
 
-    private void fillSet (TreeSet set, T fromElement, T toElement) {
+    private void fillSubSet (TreeSet set, T fromElement, T toElement) {
         for (T value : this) {
             if (value.compareTo(fromElement) >= 0 && value.compareTo(toElement) < 0) set.add(value);
         }
