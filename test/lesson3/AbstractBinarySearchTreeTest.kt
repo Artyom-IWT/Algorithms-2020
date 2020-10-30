@@ -1,11 +1,12 @@
 package lesson3
 
+import org.junit.jupiter.api.assertDoesNotThrow
 import java.util.*
 import kotlin.math.abs
-import kotlin.test.*
-import org.junit.jupiter.api.assertDoesNotThrow
-import kotlin.IllegalStateException
-import kotlin.NoSuchElementException
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 abstract class AbstractBinarySearchTreeTest {
 
@@ -162,6 +163,32 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("All clear!")
         }
+        println("Own test for BinarySearchTree<String>:")
+        val list = arrayListOf(
+            "Pollution", "estate", "Industry", "arrival", "Reflection", "courage", "Food", "aspect", "Desk", "disk",
+            "Attention", "studio", "Indication", "housing", "Problem", "suggestion", "Possession", "player", "Instance",
+            "climate", "Introduction", "requirement", "Professor", "resolution", "Resource", "funeral", "Promotion",
+            "tooth", "Meat", "classroom",
+        )
+        val index = random.nextInt(30)
+        val removed = list[index]
+        val set = mutableSetOf<String>()
+        set.addAll(list)
+        println("Initial set: $set")
+        val binary = BinarySearchTree<String>()
+        for (str in set) binary.add(str)
+        set.remove(removed)
+        println("Control set: $set")
+        val height = binary.height()
+        println("Removing element $removed from the tree...")
+        assertTrue(binary.remove(removed))
+        assertTrue(!binary.contains(removed))
+        assertTrue(binary.checkInvariant())
+        assertTrue(binary.height() <= height)
+        assertFalse(binary.remove(removed))
+        assertEquals(set.size, binary.size)
+        for (str in set) assertTrue(binary.contains(str))
+        println("All clear!")
     }
 
     protected fun doIteratorTest() {
@@ -205,6 +232,24 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("All clear!")
         }
+        println("Own test for BinarySearchTree<String>:")
+        val list = arrayListOf(
+            "Pollution", "estate", "Industry", "arrival", "Reflection", "courage", "Food", "aspect", "Desk", "disk",
+            "Attention", "studio", "Indication", "housing", "Problem", "suggestion", "Possession", "player", "Instance",
+            "climate", "Introduction", "requirement", "Professor", "resolution", "Resource", "funeral", "Promotion",
+            "tooth", "Meat", "classroom"
+        )
+        val set = TreeSet<String>()
+        set.addAll(list)
+        println("Control set: $set")
+        val binary = BinarySearchTree<String>()
+        assertFalse(binary.iterator().hasNext())
+        for (str in list) binary.add(str)
+        val iter = binary.iterator()
+        val iterControl = set.iterator()
+        while (iter.hasNext()) assertEquals(iter.next(), iterControl.next())
+        assertFailsWith<NoSuchElementException> { iter.next() }
+        println("All clear!")
     }
 
     protected fun doIteratorRemoveTest() {
@@ -272,6 +317,42 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("All clear!")
         }
+        println("Own test for BinarySearchTree<String>:")
+        val list = arrayListOf(
+            "Pollution", "tree", "Industry", "arrival", "Reflection", "courage", "Food", "aspect", "Desk", "disk",
+            "Attention", "studio", "Indication", "housing", "Problem", "suggestion", "Possession", "player", "Instance",
+            "climate", "Introduction", "requirement", "Professor", "resolution", "Resource", "funeral", "Promotion",
+            "tooth", "Meat", "classroom",
+        )
+        val index = random.nextInt(30)
+        val removed = list[index]
+        val set = mutableSetOf<String>()
+        set.addAll(list)
+        println("Initial set: $set")
+        val binary = BinarySearchTree<String>()
+        for (str in set) binary.add(str)
+        set.remove(removed)
+        println("Control set: $set")
+        val height = binary.height()
+        val iter = binary.iterator()
+        println("Removing element $removed from the tree...")
+        assertFailsWith<IllegalStateException> { iter.remove() }
+        var iterCount = binary.size
+        print("Iterating: ")
+        while (iter.hasNext()) {
+            val current = iter.next()
+            print("$current, ")
+            iterCount--
+            if (current.equals(removed)) {
+                iter.remove()
+                assertFailsWith<IllegalStateException> { iter.remove() }
+            }
+        }
+        assertEquals(iterCount, 0)
+        assertEquals(set.size, binary.size)
+        assertTrue { binary.checkInvariant() }
+        assertTrue { binary.height() <= height }
+        for (str in set) assertTrue { binary.contains(str) }
     }
 
     protected fun doSubSetTest() {
@@ -321,6 +402,29 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("All clear!")
         }
+        println("Own test for BinarySearchTree<String>:")
+        val list = arrayListOf(
+            "Pollution", "estate", "Industry", "arrival", "Reflection", "courage", "Food", "aspect", "Desk", "disk",
+            "Attention", "studio", "Indication", "housing", "Problem", "suggestion", "Possession", "player", "Instance",
+            "climate", "Introduction", "requirement", "Professor", "resolution", "Resource", "funeral", "Promotion",
+            "tooth", "Meat", "classroom",
+        )
+        println("Control set: $list")
+        val binary = BinarySearchTree<String>()
+        for (str in list) binary.add(str)
+        val indexFrom = random.nextInt(15)
+        val indexTo = random.nextInt(15) + 15
+        val fromElement = list[indexFrom]
+        val toElement = list[indexTo]
+        val subSet = binary.subSet(fromElement, toElement)
+        println("Checking if the boundaries of the subset from $fromElement to $toElement are respected...")
+        for (str in list) {
+            if (str.compareTo(fromElement) >= 0 && str.compareTo(toElement) < 0) {
+                assertTrue { subSet.contains(str) }
+                assertTrue { subSet.remove(str) }
+            } else assertFailsWith<IllegalArgumentException> { subSet.remove(str) }
+        }
+        println("All clear!")
     }
 
     protected fun doSubSetRelationTest() {
@@ -376,6 +480,53 @@ abstract class AbstractBinarySearchTreeTest {
             )
             println("All clear!")
         }
+        println("Own test for BinarySearchTree<String>:")
+        val list = arrayListOf(
+            "Pollution", "estate", "Industry", "arrival", "Reflection", "courage", "Food", "aspect", "Desk", "disk",
+            "Attention", "studio", "Indication", "housing", "Problem", "suggestion", "Possession", "player", "Instance",
+            "climate", "Introduction", "requirement", "Professor", "resolution", "Resource", "funeral", "Promotion",
+            "tooth", "Meat", "classroom"
+        )
+        val binary = BinarySearchTree<String>()
+        val indexFrom = random.nextInt(15)
+        val indexTo = random.nextInt(15) + 15
+        val fromElement = list[indexFrom]
+        val toElement = list[indexTo]
+        val subSet = binary.subSet(fromElement, toElement)
+        var all = 0
+        var sub = 0
+        val variations = listOf(
+            "middle", "Average", "between", "Honor", "test", "Value", "set", "Tree",
+            "Pollution", "estate", "Industry", "arrival", "Reflection", "courage", "Food", "aspect", "Desk", "disk",
+            "Attention", "studio", "Indication", "housing", "Problem", "suggestion", "Possession", "player", "Instance",
+            "climate", "Introduction", "requirement", "Professor", "resolution", "Resource", "funeral", "Promotion",
+            "tooth", "Meat", "classroom"
+        )
+        println("Checking if the boundaries of the subset from $fromElement to $toElement are respected...")
+        for (value in variations) {
+            if (value.compareTo(fromElement) >= 0 && value.compareTo(toElement) < 0) {
+                if (random.nextBoolean()) {
+                    if (binary.add(value)) {
+                        all++
+                        sub++
+                    }
+                    assertTrue { subSet.contains(value) }
+
+                } else {
+                    if (subSet.add(value)) {
+                        all++
+                        sub++
+                    }
+                    assertTrue { binary.contains(value) }
+                }
+            } else {
+                if (binary.add(value)) all++
+                assertFalse { subSet.contains(value) }
+            }
+        }
+        assertEquals(all, binary.size)
+        assertEquals(sub, subSet.size)
+        println("All clear!")
     }
 
     protected fun doSubSetFirstAndLastTest() {
@@ -440,6 +591,7 @@ abstract class AbstractBinarySearchTreeTest {
             )
             println("First element: $actualFirst. Last element: $actualLast.")
         }
+        println("Own test for BinarySearchTree<String>:")
     }
 
     protected fun doHeadSetTest() {
