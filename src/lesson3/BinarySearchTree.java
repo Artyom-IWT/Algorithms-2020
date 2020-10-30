@@ -107,7 +107,6 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
     @Override
     public boolean remove(Object o) {
-        if (!contains(o)) return false;
         @SuppressWarnings("unchecked")
         List<Node<T>> list = findWithParent(root, (T) o);
         if (list == null) return false;
@@ -115,24 +114,19 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         if (current.isLeaf()) {
             if (list.size() == 2) {
                 Node<T> parent = list.get(1);
-                if (parent.left != null && parent.left.value.equals(current.value)) parent.left = null;
-                else parent.right = null;
+                reassign(parent, current, null);
             } else root = null;
         }
         else if (current.left != null && current.right == null) {
             if (list.size() == 2) {
                 Node<T> parent = list.get(1);
-                Node<T> left = current.left;
-                if (parent.left != null && parent.left.value.equals(current.value)) parent.left = left;
-                else parent.right = left;
+                reassign(parent, current, current.left);
             } else root = current.left;
         }
         else if (current.left == null) {
             if (list.size() == 2) {
                 Node<T> parent = list.get(1);
-                Node<T> right = current.right;
-                if (parent.right != null && parent.right.value.equals(current.value)) parent.right = right;
-                else parent.left = right;
+                reassign(parent, current, current.right);
             } else root = current.right;
         }
         else  {
@@ -140,12 +134,11 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
                 current.right.left = current.left;
                 if (list.size() == 2) {
                     Node<T> parent = list.get(1);
-                    if (parent.left != null && parent.left.value.equals(current.value)) parent.left = current.right;
-                    else parent.right = current.right;
+                    reassign(parent, current, current.right);
                 } else root = current.right;
             } else {
                 Node<T> smallestP = findSmallestParent(current.right);
-                Node<T> node = new Node(smallestP.left.value);
+                Node<T> node = smallestP.left;
                 if (smallestP.left.right != null) {
                     smallestP.left = smallestP.left.right;
                 } else smallestP.left = null;
@@ -153,14 +146,18 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
                 node.right = current.right;
                 if (list.size() == 2) {
                     Node<T> parent = list.get(1);
-                    if (parent.left != null && parent.left.value.equals(current.value)) parent.left = node;
-                    else parent.right = node;
+                    reassign(parent, current, node);
                 } else root = node;
             }
         }
         size--;
         return true;
     } //трудоёмкость - O(log(n))
+
+    private void reassign(Node<T> parent, Node<T> current, Node<T> node) {
+        if (parent.left != null && parent.left.value.equals(current.value)) parent.left = node;
+        else parent.right = node;
+    }
 
     private List<Node<T>> findWithParent(Node<T> start, T value) {
         if (start == null) return null;
