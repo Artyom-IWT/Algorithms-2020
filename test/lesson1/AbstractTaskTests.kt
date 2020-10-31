@@ -88,6 +88,11 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+        try {
+            assertFailsWith<IllegalArgumentException> { sortAddresses("input/addr_in4.txt", "temp.txt") }
+        } finally {
+            File("temp.txt").delete()
+        }
     }
 
     private fun generateTemperatures(size: Int): PerfResult<Unit> {
