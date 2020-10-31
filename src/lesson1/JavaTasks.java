@@ -102,7 +102,7 @@ public class JavaTasks {
      * Железнодорожная 3 - Петров Иван
      * Железнодорожная 7 - Иванов Алексей, Иванов Михаил
      * Садовая 5 - Сидоров Петр, Сидорова Мария
-     *
+     *[А-Яа-яЁё\s\-\d]+
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
     static public void sortAddresses(String inputName, String outputName) throws IOException{
@@ -120,7 +120,7 @@ public class JavaTasks {
         Map<String, TreeSet<String>> map = new TreeMap<>(comparator);
         String line = reader.readLine();
         while (line != null) {
-            if (!line.matches("[А-Яа-яЁё\\s\\-\\d]+"))
+            if (!line.matches("([А-Яа-яЁё\\-]+ )+- ([А-Яа-яЁё\\-]+ )+\\d+"))
                 throw new IllegalArgumentException();
             String[] array = line.split(" - ");
             if (!map.containsKey(array[1])) map.put(array[1], new TreeSet<>());
