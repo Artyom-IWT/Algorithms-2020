@@ -68,10 +68,10 @@ public class JavaTasks {
         DateFormat df = new SimpleDateFormat("hh:mm:ss aa");
         DateFormat s = new SimpleDateFormat("ss");
         BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputName));
-        for (int i = 0; i < timesA.length; i++) {
+        for (int i : timesA) {
             Date date;
             String out;
-            date = s.parse(String.valueOf(timesA[i]));
+            date = s.parse(String.valueOf(i));
             out = df.format(date);
             writer.write(out);
             writer.newLine();

@@ -3,7 +3,6 @@ package lesson2;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 @SuppressWarnings("unused")

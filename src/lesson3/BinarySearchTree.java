@@ -310,6 +310,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
             }
 
             @Override
+            @SuppressWarnings("unchecked")
             public boolean remove(Object o) {
                 if (fromElement.compareTo((T) o) > 0 || toElement.compareTo((T) o) <= 0) throw new IllegalArgumentException();
                 tree.remove(o);
@@ -335,7 +336,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         return set;
     }
 
-    private void fillSubSet (TreeSet set, T fromElement, T toElement) {
+    private void fillSubSet (TreeSet<T> set, T fromElement, T toElement) {
         for (T value : this) {
             if (value.compareTo(fromElement) >= 0 && value.compareTo(toElement) < 0) set.add(value);
         }
