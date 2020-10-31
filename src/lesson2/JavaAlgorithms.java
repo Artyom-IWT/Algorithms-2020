@@ -3,6 +3,9 @@ package lesson2;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
     /**
@@ -113,20 +116,16 @@ public class JavaAlgorithms {
      */
     static public int calcPrimesNumber(int limit) {
         int count = 0;
-        int value = 1;
-        while (value <= limit) {
-            if (isPrime(value)) count++;
-            value++;
+        boolean[] flags = new boolean[limit + 1];
+        Arrays.fill(flags, true);
+        for (int i = 2; i * i <= limit; i++) {
+            if (flags[i])
+                for (int j = i * i; j <= limit; j += i)
+                    flags[j] = false;
+        }
+        for (int i = 2; i <= limit; i++) {
+            if (flags[i]) count++;
         }
         return count;
-    }
-    private static boolean isPrime(int n) {
-        if (n < 2) return false;
-        else if (n <= 3) return true;
-        else if (n % 2 == 0 || n % 3 == 0) return false;
-        for (int i = 3; i <= (int) Math.sqrt((double) n); i += 2) { //при использовании i <= Math.sqrt(n) работает в 1.5 раза дольше
-            if (n % i == 0) return false;
-        }
-        return true;
-    }
+    } // Трудоёмкость - O(N*log(log(N)))
 }

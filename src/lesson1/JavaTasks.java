@@ -77,7 +77,7 @@ public class JavaTasks {
             writer.newLine();
         }
         writer.close();
-    }
+    } // Трудоёмксоть - O(N*log(N)); Ресурсоёмкость - O(N)
 
     /**
      * Сортировка адресов
@@ -102,7 +102,7 @@ public class JavaTasks {
      * Железнодорожная 3 - Петров Иван
      * Железнодорожная 7 - Иванов Алексей, Иванов Михаил
      * Садовая 5 - Сидоров Петр, Сидорова Мария
-     *[А-Яа-яЁё\s\-\d]+
+     *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
     static public void sortAddresses(String inputName, String outputName) throws IOException{
@@ -135,7 +135,7 @@ public class JavaTasks {
             writer.newLine();
         }
         writer.close();
-    }
+    } // Трудоёмксоть - O(N); Ресурсоёмкость - O(N)
 
     /**
      * Сортировка температур
@@ -169,23 +169,22 @@ public class JavaTasks {
      */
     static public void sortTemperatures(String inputName, String outputName) throws IOException{
         BufferedReader reader = Files.newBufferedReader(Paths.get(inputName));
-        List<Double> doubles = new ArrayList<>();
+        List<Integer> ints = new ArrayList<>();
         String line = reader.readLine();
         while (line != null) {
             double d = Double.parseDouble(line);
             if (d > 500.0 || d < -273.0) throw new IllegalArgumentException();
-            doubles.add(d);
+            ints.add((int) (d * 10) + 2730);
             line = reader.readLine();
         }
-        double[] doublesA = doubles.stream().mapToDouble(d -> d).toArray();
-        Arrays.sort(doublesA);
+        int[] intsA = Sorts.countingSort(ints.stream().mapToInt(i -> i).toArray(), 7730);
         BufferedWriter writer = Files.newBufferedWriter(Paths.get(outputName));
-        for (double d : doublesA) {
-            writer.write(String.valueOf(d));
+        for (int i : intsA) {
+            writer.write(String.valueOf((i - 2730) / 10.0));
             writer.newLine();
         }
         writer.close();
-    }
+    } // Трудоёмксоть - O(N); Ресурсоёмкость - O(N)
 
     /**
      * Сортировка последовательности

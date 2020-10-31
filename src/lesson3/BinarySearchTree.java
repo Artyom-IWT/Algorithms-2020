@@ -152,7 +152,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         }
         size--;
         return true;
-    } //трудоёмкость - O(log(n))
+    } // Трудоёмксоть - O(log(N)); Ресурсоёмкость - O(N)
 
     private void reassign(Node<T> parent, Node<T> current, Node<T> node) {
         if (parent.left != null && parent.left.value.equals(current.value)) parent.left = node;
@@ -224,7 +224,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         @Override
         public boolean hasNext() {
             return !stack.empty();
-        }
+        } // Трудоёмкость - O(1); Ресурсоёмкость - O(1)
 
         /**
          * Получение следующего элемента
@@ -247,7 +247,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
                 if (current.right != null) fillStack(current.right);
                 return current.value;
             } else throw new NoSuchElementException();
-        } //трудоёмксоть - O(n);
+        } // Трудоёмксоть - O(N); Ресурсоёмкость - O(N)
 
         private void fillStack (Node<T> start) {
             while (start != null) {
@@ -275,7 +275,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
                 BinarySearchTree.this.remove(current.value);
                 current = null;
             } else throw new IllegalStateException();
-        }
+        } // Трудоёмксоть - O(log(N)); Ресурсоёмкость - O(N)
     }
 
     /**
@@ -339,7 +339,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         for (T value : this) {
             if (value.compareTo(fromElement) >= 0 && value.compareTo(toElement) < 0) set.add(value);
         }
-    }
+    } // Трудоёмксоть - O(N); Ресурсоёмкость - O(N)
 
 
     /**
