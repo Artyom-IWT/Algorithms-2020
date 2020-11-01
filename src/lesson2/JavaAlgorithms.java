@@ -139,5 +139,5 @@ public class JavaAlgorithms {
             if (flags[i]) count++;
         }
         return count;
-    } // Трудоёмкость - O(N*log(log(N)))
+    } // Трудоёмкость - O(N*log(log(N))); Ресурсоёмкость - O(N)
 }

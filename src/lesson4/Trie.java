@@ -116,7 +116,7 @@ public class Trie extends AbstractSet<String> implements Set<String> {
         @Override
         public boolean hasNext() {
             return !stack.empty();
-        }
+        } // Трудоёмкость - O(1); Ресурсоёмкость - O(1)
 
         @Override
         public String next() {
@@ -124,7 +124,7 @@ public class Trie extends AbstractSet<String> implements Set<String> {
                 current = stack.pop();
                 return current;
             } else throw new NoSuchElementException();
-        }
+        } // Трудоёмкость - O(N); Ресурсоёмкость - O(N)
 
         @Override
         public void remove() {
@@ -132,7 +132,7 @@ public class Trie extends AbstractSet<String> implements Set<String> {
                 Trie.this.remove(current);
                 current = null;
             } else throw new IllegalStateException();
-        }
+        } // Трудоёмксоть - O(N); Ресурсоёмкость - O(N)
 
     }
 
