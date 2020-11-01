@@ -3,6 +3,7 @@ package lesson4
 import java.util.*
 import kotlin.math.abs
 import ru.spbstu.kotlin.generate.util.nextString
+import kotlin.NoSuchElementException
 import kotlin.test.*
 
 abstract class AbstractTrieTest {
@@ -104,11 +105,31 @@ abstract class AbstractTrieTest {
                 controlSet.isEmpty(),
                 "TrieIterator doesn't traverse the entire set."
             )
-            assertFailsWith<IllegalStateException>("Something was supposedly returned after the elements ended") {
+            assertFailsWith<NoSuchElementException>("Something was supposedly returned after the elements ended") {
                 trieIter.next()
             }
             println("All clear!")
         }
+        println("Own test for Trie:")
+        val list = arrayListOf(
+            "Pollution", "estate", "Industry", "arrival", "Reflection", "courage", "Food", "aspect", "Desk", "disk",
+            "Attention", "studio", "Indication", "housing", "Problem", "suggestion", "Possession", "player", "Instance",
+            "climate", "Introduction", "requirement", "Professor", "resolution", "Resource", "funeral", "Promotion",
+            "tooth", "Meat", "classroom"
+        )
+        println("Control set: $list")
+        val trie = Trie()
+        assertFalse(trie.iterator().hasNext())
+        for (str in list) trie.add(str)
+        val iter1 = trie.iterator()
+        val iter2 = trie.iterator()
+        while (iter1.hasNext()) assertEquals(iter1.next(), iter2.next())
+        assertFailsWith<NoSuchElementException> { iter1.next() }
+        val iter3 = trie.iterator()
+        while (iter3.hasNext()) list.remove(iter3.next())
+        assertTrue { list.isEmpty() }
+        assertFailsWith<NoSuchElementException> { iter3.next() }
+        println("All clear!")
     }
 
     protected fun doIteratorRemoveTest() {
@@ -170,6 +191,36 @@ abstract class AbstractTrieTest {
             }
             println("All clear!")
         }
+        println("Own test for Trie:")
+        val list = arrayListOf(
+            "Pollution", "tree", "Industry", "arrival", "Reflection", "courage", "Food", "aspect", "Desk", "disk",
+            "Attention", "studio", "Indication", "housing", "Problem", "suggestion", "Possession", "player", "Instance",
+            "climate", "Introduction", "requirement", "Professor", "resolution", "Resource", "funeral", "Promotion",
+            "tooth", "Meat", "classroom",
+        )
+        val index = random.nextInt(30)
+        val removed = list[index]
+        println("Initial set: $list")
+        val trie = Trie()
+        for (str in list) trie.add(str)
+        println("Removing element $removed from the tree...")
+        list.remove(removed)
+        println("Control set: $list")
+        val iter = trie.iterator()
+        assertFailsWith<IllegalStateException> { iter.remove() }
+        var iterCount = trie.size
+        while (iter.hasNext()) {
+            val current = iter.next()
+            iterCount--
+            if (current.equals(removed)) {
+                iter.remove()
+                assertFailsWith<IllegalStateException> { iter.remove() }
+            }
+        }
+        assertEquals(iterCount, 0)
+        assertEquals(list.size, trie.size)
+        for (str in list) assertTrue { trie.contains(str) }
+        for (str in trie) assertTrue { list.contains(str) }
+        println("All clear!")
     }
-
 }
