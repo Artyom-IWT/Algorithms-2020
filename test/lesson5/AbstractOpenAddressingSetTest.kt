@@ -76,6 +76,19 @@ abstract class AbstractOpenAddressingSetTest {
                 )
             }
         }
+        println("Own test #1")
+        val set = mutableSetOf(0, 1, 2, 3, 4, 5, 6, 7);
+        val openSet = OpenAddressingSet<Int>(3)
+        openSet.addAll(set)
+        val initialSize = openSet.size
+        val expectedSize = initialSize - 1
+        assertTrue { openSet.remove(6) }
+        assertFalse { openSet.remove(6) }
+        assertFalse { openSet.remove(8) }
+        assertEquals(openSet.size, expectedSize)
+        assertFalse { openSet.contains(8) }
+        assertFalse { openSet.contains(6) }
+        print("All clear!")
     }
 
     protected fun doIteratorTest() {

@@ -30,6 +30,8 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         storage = new Object[capacity];
     }
 
+    private final Object removed = new Object();
+
     @Override
     public int size() {
         return size;
@@ -40,13 +42,18 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      */
     @Override
     public boolean contains(Object o) {
-        int index = startingIndex(o);
+        int startingIndex = startingIndex(o);
+        int index = startingIndex;
         Object current = storage[index];
         while (current != null) {
             if (current.equals(o)) {
                 return true;
             }
             index = (index + 1) % capacity;
+            /** если все ячейки таблицы будут заполнены, и мы будем искать объект,
+            которого в таблице нет, произойдёт зацикливание (без условия ниже
+            проверка на наличие элемента (8) в собственном тесте #1 к remove будет длиться вечно)**/
+            if (index == startingIndex) break;
             current = storage[index];
         }
         return false;
@@ -67,7 +74,7 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         int startingIndex = startingIndex(t);
         int index = startingIndex;
         Object current = storage[index];
-        while (current != null) {
+        while (current != null && !current.equals(removed)) {
             if (current.equals(t)) {
                 return false;
             }
@@ -95,7 +102,20 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      */
     @Override
     public boolean remove(Object o) {
-        return super.remove(o);
+        int startingIndex = startingIndex(o);
+        int index = startingIndex;
+        Object current = storage[index];
+        while (current != null) {
+            if (current.equals(o)) {
+                storage[index] = removed;
+                size--;
+                return true;
+            }
+            index = (index + 1) % capacity;
+            if (index == startingIndex) break;
+            current = storage[index];
+        }
+        return false;
     }
 
     /**
