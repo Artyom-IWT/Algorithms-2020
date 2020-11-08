@@ -154,7 +154,7 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
 
         @Override
         public void remove() {
-            if (current != null && current == removed) {
+            if (current != null && current != removed) {
                 storage[index - 1] = removed;
                 iterations--;
                 size--;
