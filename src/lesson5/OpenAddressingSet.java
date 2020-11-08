@@ -71,7 +71,7 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         int startingIndex = startingIndex(t);
         int index = startingIndex;
         Object current = storage[index];
-        while (current != null && current !=removed) {
+        while (current != null && current != removed) {
             if (current.equals(t)) {
                 return false;
             }
