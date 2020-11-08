@@ -1,11 +1,8 @@
 package lesson5;
 
-import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class OpenAddressingSet<T> extends AbstractSet<T> {
 
@@ -51,7 +48,7 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
             }
             index = (index + 1) % capacity;
             /* если все ячейки таблицы будут заполнены, и мы будем искать объект,
-            которого в таблице нет, произойдёт зацикливание (без условия ниже
+            которого в таблице нет, произойдёт зацикливание (грубо говоря без условия ниже
             проверка на наличие элемента (8) в собственном тесте #1 к remove будет длиться вечно)*/
             if (index == startingIndex) break;
             current = storage[index];
@@ -61,10 +58,10 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
 
     /**
      * Добавление элемента в таблицу.
-     *
+     * <p>
      * Не делает ничего и возвращает false, если такой же элемент уже есть в таблице.
      * В противном случае вставляет элемент в таблицу и возвращает true.
-     *
+     * <p>
      * Бросает исключение (IllegalStateException) в случае переполнения таблицы.
      * Обычно Set не предполагает ограничения на размер и подобных контрактов,
      * но в данном случае это было введено для упрощения кода.
@@ -74,7 +71,7 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         int startingIndex = startingIndex(t);
         int index = startingIndex;
         Object current = storage[index];
-        while (current != null && !current.equals(removed)) {
+        while (current != null && current !=removed) {
             if (current.equals(t)) {
                 return false;
             }
@@ -91,13 +88,13 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
 
     /**
      * Удаление элемента из таблицы
-     *
+     * <p>
      * Если элемент есть в таблица, функция удаляет его из дерева и возвращает true.
      * В ином случае функция оставляет множество нетронутым и возвращает false.
      * Высота дерева не должна увеличиться в результате удаления.
-     *
+     * <p>
      * Спецификация: {@link Set#remove(Object)} (Ctrl+Click по remove)
-     *
+     * <p>
      * Средняя
      */
     @Override
@@ -116,22 +113,52 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
             current = storage[index];
         }
         return false;
-    }
+    } // Трудоёмксоть - O(N); Ресурсоёмкость - O(N)
 
     /**
      * Создание итератора для обхода таблицы
-     *
+     * <p>
      * Не забываем, что итератор должен поддерживать функции next(), hasNext(),
      * и опционально функцию remove()
-     *
+     * <p>
      * Спецификация: {@link Iterator} (Ctrl+Click по Iterator)
-     *
+     * <p>
      * Средняя (сложная, если поддержан и remove тоже)
      */
     @NotNull
     @Override
-    public Iterator<T> iterator() {
-        // TODO
-        throw new NotImplementedError();
+    public Iterator<T> iterator() { return new OpenAddressingSetIterator();}
+
+    public class OpenAddressingSetIterator implements Iterator<T> {
+
+        private int index = 0;
+        private int iterations = 0;
+        Object current;
+
+        @Override
+        public boolean hasNext() {
+            return iterations < size;
+        } // Трудоёмкость - O(1); Ресурсоёмкость - O(1)
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public T next() {
+            if (hasNext()) {
+                while (storage[index] == null || storage[index] == removed) index++;
+                current = storage[index];
+                index++;
+                iterations++;
+                return (T) current;
+            } else throw new NoSuchElementException();
+        } // Трудоёмкость - O(N); Ресурсоёмкость - O(N)
+
+        @Override
+        public void remove() {
+            if (current != null && current == removed) {
+                storage[index - 1] = removed;
+                iterations--;
+                size--;
+            } else throw new IllegalStateException();
+        } // Трудоёмкость - O(1); Ресурсоёмкость - O(1)
     }
 }

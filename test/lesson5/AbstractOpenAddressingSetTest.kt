@@ -2,6 +2,7 @@ package lesson5
 
 import ru.spbstu.kotlin.generate.util.nextString
 import java.util.*
+import kotlin.NoSuchElementException
 import kotlin.math.abs
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -77,7 +78,7 @@ abstract class AbstractOpenAddressingSetTest {
             }
         }
         println("Own test #1")
-        val set = mutableSetOf(0, 1, 2, 3, 4, 5, 6, 7);
+        val set = mutableSetOf(0, 1, 2, 3, 4, 5, 6, 7)
         val openSet = OpenAddressingSet<Int>(3)
         openSet.addAll(set)
         val initialSize = openSet.size
@@ -126,7 +127,7 @@ abstract class AbstractOpenAddressingSetTest {
                 controlSet.isEmpty(),
                 "OpenAddressingSetIterator doesn't traverse the entire set."
             )
-            assertFailsWith<IllegalStateException>("Something was supposedly returned after the elements ended") {
+            assertFailsWith<NoSuchElementException>("Something was supposedly returned after the elements ended") {
                 openAddressingSetIter.next()
             }
             println("All clear!")
