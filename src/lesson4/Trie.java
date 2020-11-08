@@ -101,13 +101,13 @@ public class Trie extends AbstractSet<String> implements Set<String> {
 
         private TrieIterator() {
             stack = new Stack<>();
-            if (root != null) filler("", root.children);
+            if (root != null) fillStack("", root.children);
             current = null;
         }
-        private void filler(String next, Map<Character, Node> map) {
+        private void fillStack(String next, Map<Character, Node> map) {
             for (Map.Entry<Character, Node> entry: map.entrySet()) {
                 if (!entry.getKey().equals((char) 0))
-                    filler(next + entry.getKey(), entry.getValue().children);
+                    fillStack(next + entry.getKey(), entry.getValue().children);
                 else
                     stack.push(next);
             }
