@@ -77,7 +77,7 @@ abstract class AbstractOpenAddressingSetTest {
                 )
             }
         }
-        println("Own test #1")
+        println("Own test")
         val set = mutableSetOf(0, 1, 2, 3, 4, 5, 6, 7)
         val openSet = OpenAddressingSet<Int>(3)
         openSet.addAll(set)
@@ -89,7 +89,7 @@ abstract class AbstractOpenAddressingSetTest {
         assertEquals(openSet.size, expectedSize)
         assertFalse { openSet.contains(8) }
         assertFalse { openSet.contains(6) }
-        print("All clear!")
+        println("All clear!")
     }
 
     protected fun doIteratorTest() {
@@ -132,6 +132,21 @@ abstract class AbstractOpenAddressingSetTest {
             }
             println("All clear!")
         }
+        println("Own test")
+        val set = mutableSetOf(0, 1, 2, 3, 4, 5, 6, 7)
+        val openSet = OpenAddressingSet<Int>(3)
+        openSet.addAll(set)
+        val iter1 = openSet.iterator()
+        assertFalse { iter1.hasNext() }
+        assertFailsWith<IllegalStateException> { iter1.remove() }
+        val iter2 = openSet.iterator()
+        while (iter1.hasNext()) assertEquals(iter1.next(), iter2.next())
+        assertFailsWith<NoSuchElementException> { iter1.next() }
+        assertFailsWith<NoSuchElementException> { iter2.next() }
+        val iter3 = openSet.iterator();
+        while (iter3.hasNext()) set.remove(iter3.next())
+        assertTrue { set.isEmpty() }
+        assertFailsWith<NoSuchElementException> { iter3.next() }
     }
 
     protected fun doIteratorRemoveTest() {
@@ -189,5 +204,25 @@ abstract class AbstractOpenAddressingSetTest {
             }
             println("All clear!")
         }
+        println("Own test")
+        val set = mutableSetOf(0, 1, 2, 3, 4, 5, 6, 7)
+        val r = random.nextInt(8)
+        println("Removing [$r]")
+        val openSet = OpenAddressingSet<Int>(3)
+        openSet.addAll(set)
+        val iter = openSet.iterator()
+        assertFailsWith<IllegalStateException> { iter.remove() }
+        var count = openSet.size;
+        while (iter.hasNext()) {
+            val element = iter.next()
+            count--
+            if (element == r) iter.remove()
+        }
+        assertEquals(0, count)
+        set.remove(r)
+        assertEquals(set.size, openSet.size)
+        for (i in set) assertTrue { openSet.contains(i) }
+        for (i in openSet) assertTrue { set.contains(i) }
+        println("All clear!")
     }
 }
