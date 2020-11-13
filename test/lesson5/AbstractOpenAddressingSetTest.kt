@@ -135,9 +135,9 @@ abstract class AbstractOpenAddressingSetTest {
         println("Own test")
         val set = mutableSetOf(0, 1, 2, 3, 4, 5, 6, 7)
         val openSet = OpenAddressingSet<Int>(3)
+        assertFalse { openSet.iterator().hasNext() }
         openSet.addAll(set)
         val iter1 = openSet.iterator()
-        assertFalse { iter1.hasNext() }
         assertFailsWith<IllegalStateException> { iter1.remove() }
         val iter2 = openSet.iterator()
         while (iter1.hasNext()) assertEquals(iter1.next(), iter2.next())
