@@ -143,7 +143,7 @@ abstract class AbstractOpenAddressingSetTest {
         while (iter1.hasNext()) assertEquals(iter1.next(), iter2.next())
         assertFailsWith<NoSuchElementException> { iter1.next() }
         assertFailsWith<NoSuchElementException> { iter2.next() }
-        val iter3 = openSet.iterator();
+        val iter3 = openSet.iterator()
         while (iter3.hasNext()) set.remove(iter3.next())
         assertTrue { set.isEmpty() }
         assertFailsWith<NoSuchElementException> { iter3.next() }
@@ -212,7 +212,7 @@ abstract class AbstractOpenAddressingSetTest {
         openSet.addAll(set)
         val iter = openSet.iterator()
         assertFailsWith<IllegalStateException> { iter.remove() }
-        var count = openSet.size;
+        var count = openSet.size
         while (iter.hasNext()) {
             val element = iter.next()
             count--
