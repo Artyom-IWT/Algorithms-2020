@@ -172,13 +172,11 @@ abstract class AbstractBinarySearchTreeTest {
         )
         val index = random.nextInt(30)
         val removed = list[index]
-        val set = mutableSetOf<String>()
-        set.addAll(list)
-        println("Initial set: $set")
+        println("Initial set: $list")
         val binary = BinarySearchTree<String>()
-        for (str in set) binary.add(str)
-        set.remove(removed)
-        println("Control set: $set")
+        for (str in list) binary.add(str)
+        list.remove(removed)
+        println("Control set: $list")
         val height = binary.height()
         println("Removing element $removed from the tree...")
         assertTrue(binary.remove(removed))
@@ -186,8 +184,8 @@ abstract class AbstractBinarySearchTreeTest {
         assertTrue(binary.checkInvariant())
         assertTrue(binary.height() <= height)
         assertFalse(binary.remove(removed))
-        assertEquals(set.size, binary.size)
-        for (str in set) assertTrue(binary.contains(str))
+        assertEquals(list.size, binary.size)
+        for (str in list) assertTrue(binary.contains(str))
         println("All clear!")
     }
 
@@ -317,22 +315,16 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("All clear!")
         }
-        println("Own test for BinarySearchTree<String>:")
-        val list = arrayListOf(
-            "Pollution", "tree", "Industry", "arrival", "Reflection", "courage", "Food", "aspect", "Desk", "disk",
-            "Attention", "studio", "Indication", "housing", "Problem", "suggestion", "Possession", "player", "Instance",
-            "climate", "Introduction", "requirement", "Professor", "resolution", "Resource", "funeral", "Promotion",
-            "tooth", "Meat", "classroom",
-        )
+        println("Own test for BinarySearchTree<Double>:")
+        val list = mutableListOf<Double>()
+        for (i in 1..30) list.add(random.nextDouble())
         val index = random.nextInt(30)
         val removed = list[index]
-        val set = mutableSetOf<String>()
-        set.addAll(list)
-        println("Initial set: $set")
-        val binary = BinarySearchTree<String>()
-        for (str in set) binary.add(str)
-        set.remove(removed)
-        println("Control set: $set")
+        println("Initial set: $list")
+        val binary = BinarySearchTree<Double>()
+        for (d in list) binary.add(d)
+        list.remove(removed)
+        println("Control set: $list")
         val height = binary.height()
         val iter = binary.iterator()
         println("Removing element $removed from the tree...")
@@ -343,16 +335,17 @@ abstract class AbstractBinarySearchTreeTest {
             val current = iter.next()
             print("$current, ")
             iterCount--
-            if (current.equals(removed)) {
+            if (current == removed) {
                 iter.remove()
                 assertFailsWith<IllegalStateException> { iter.remove() }
             }
         }
-        assertEquals(iterCount, 0)
-        assertEquals(set.size, binary.size)
+        assertEquals(0, iterCount)
+        assertEquals(list.size, binary.size)
         assertTrue { binary.checkInvariant() }
         assertTrue { binary.height() <= height }
-        for (str in set) assertTrue { binary.contains(str) }
+        for (d in list) assertTrue { binary.contains(d) }
+        println("All clear!")
     }
 
     protected fun doSubSetTest() {

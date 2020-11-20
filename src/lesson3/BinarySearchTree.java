@@ -110,47 +110,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         @SuppressWarnings("unchecked")
         List<Node<T>> list = findWithParent(root, (T) o);
         if (list == null) return false;
-        Node<T> current = list.get(0);
-        if (current.isLeaf()) {
-            if (list.size() == 2) {
-                Node<T> parent = list.get(1);
-                reassign(parent, current, null);
-            } else root = null;
-        }
-        else if (current.left != null && current.right == null) {
-            if (list.size() == 2) {
-                Node<T> parent = list.get(1);
-                reassign(parent, current, current.left);
-            } else root = current.left;
-        }
-        else if (current.left == null) {
-            if (list.size() == 2) {
-                Node<T> parent = list.get(1);
-                reassign(parent, current, current.right);
-            } else root = current.right;
-        }
-        else  {
-            if (current.right.left == null) {
-                current.right.left = current.left;
-                if (list.size() == 2) {
-                    Node<T> parent = list.get(1);
-                    reassign(parent, current, current.right);
-                } else root = current.right;
-            } else {
-                Node<T> smallestP = findSmallestParent(current.right);
-                Node<T> node = smallestP.left;
-                if (smallestP.left.right != null) {
-                    smallestP.left = smallestP.left.right;
-                } else smallestP.left = null;
-                node.left = current.left;
-                node.right = current.right;
-                if (list.size() == 2) {
-                    Node<T> parent = list.get(1);
-                    reassign(parent, current, node);
-                } else root = node;
-            }
-        }
-        size--;
+        else if (list.size() == 2) remove(list.get(0), list.get(1));
+        else remove(list.get(0), null);
         return true;
     } // Трудоёмксоть - O(log(N)); Ресурсоёмкость - O(N)
 
@@ -186,6 +147,45 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         return start;
     }
 
+    @SuppressWarnings("unchecked")
+    private void remove(Node<T> current, Node<T> parent) {
+        if (current.isLeaf()) {
+            if (parent != null)
+                reassign(parent, current, null);
+            else root = null;
+        }
+        else if (current.left != null && current.right == null) {
+            if (parent != null)
+                reassign(parent, current, current.left);
+            else root = current.left;
+        }
+        else if (current.left == null) {
+            if (parent != null)
+                reassign(parent, current, current.right);
+            else root = current.right;
+        }
+        else  {
+            if (current.right.left == null) {
+                current.right.left = current.left;
+                if (parent != null)
+                    reassign(parent, current, current.right);
+                else root = current.right;
+            } else {
+                Node<T> smallestP = findSmallestParent(current.right);
+                Node<T> node = new Node(smallestP.left.value);
+                if (smallestP.left.right != null) {
+                    smallestP.left = smallestP.left.right;
+                } else smallestP.left = null;
+                node.left = current.left;
+                node.right = current.right;
+                if (parent != null)
+                    reassign(parent, current, node);
+                else root = node;
+            }
+        }
+        size--;
+    }
+
 
     @Nullable
     @Override
@@ -203,11 +203,14 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
         private final Stack<Node<T>> stack;
         private Node<T> current;
+        private Node<T> parent;
+        private boolean removed;
 
         private BinarySearchTreeIterator() {
             stack = new Stack<>();
             fillStack(root);
             current = null;
+            removed = true;
         }
 
         /**
@@ -243,8 +246,17 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         @Override
         public T next() {
             if (hasNext()) {
+                parent = current;
                 current = stack.pop();
+                if (current == root) parent = null;
+                if (!stack.empty()) {
+                    Node <T> previous = stack.peek();
+                    if ((previous.left != null && previous.left.value.equals(current.value))
+                    || (previous.right != null && previous.right.value.equals(current.value)))
+                        parent = previous;
+                }
                 if (current.right != null) fillStack(current.right);
+                removed = false;
                 return current.value;
             } else throw new NoSuchElementException();
         } // Трудоёмксоть - O(N); Ресурсоёмкость - O(N)
@@ -264,16 +276,16 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          * Бросает IllegalStateException, если функция была вызвана до первого вызова next() или же была вызвана
          * более одного раза после любого вызова next().
          *
-         * Спецификация: {@link Iterator#remove()}  remo(Ctrl+Click поve)
+         * Спецификация: {@link Iterator#remove()} (Ctrl+Click по remove)
          *
          * Сложная
          */
 
         @Override
         public void remove() {
-            if (current != null) {
-                BinarySearchTree.this.remove(current.value);
-                current = null;
+            if (!removed) {
+                BinarySearchTree.this.remove(current, parent);
+                removed = true;
             } else throw new IllegalStateException();
         } // Трудоёмксоть - O(log(N)); Ресурсоёмкость - O(N)
     }
