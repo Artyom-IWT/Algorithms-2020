@@ -1,5 +1,6 @@
 package lesson7
 
+import java.util.*
 import kotlin.test.assertEquals
 
 abstract class AbstractDynamicTests {
@@ -35,6 +36,10 @@ abstract class AbstractDynamicTests {
                 """.trimIndent()
             ).length, "Answer must have length of $expectedLength2"
         )
+        assertEquals("мони", longestCommonSubSequence("Схемотехника", "Программирование"))
+        assertEquals(4, longestCommonSubSequence("Схемотехника", "Программирование").length)
+        assertEquals("ие", longestCommonSubSequence("Бинарное", "бизе"))
+        assertEquals(2, longestCommonSubSequence("Бинарное", "Дерево").length)
     }
 
     fun longestIncreasingSubSequence(longestIncreasingSubSequence: (List<Int>) -> List<Int>) {
@@ -55,6 +60,12 @@ abstract class AbstractDynamicTests {
                 )
             )
         )
+        val random = Random()
+        for (i in 0..9) {
+            val l = mutableListOf<Int>()
+            for (j in 0..19) l.add(random.nextInt(20))
+            assertEquals(longestIncreasingSubSequence(l), longestIncreasingSubSequence(l))
+        }
     }
 
     fun shortestPathOnField(shortestPathOnField: (String) -> Int) {
